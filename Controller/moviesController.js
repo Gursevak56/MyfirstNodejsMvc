@@ -13,14 +13,31 @@ exports.getallmovies=
         }
     });
     }
-    exports.getSinglemovie=(req,res)=>{
+    exports.getSinglemovie=(req,res,next)=>{
 
     const movie=movies.find(f=>f.id===req.params.id);
+    if(!movie){
+        res.status(400).json({
+            "status":"fail",
+            'movie':`movie not found with id ${req.params.id}`
+        })
+        next();
+    }
     res.json({
         data:{
             movie:movie
         }
     })
+}
+
+exports.validate=(req,res,next)=>{
+    if(!req.body.name || !req.body.realeasedate){
+        res.status(400).json({
+            'status':'fail',
+            'data':'data not found from client'
+        })
+    }
+    next();
 }
 
 exports.addNewmovie=(req,res)=>{
