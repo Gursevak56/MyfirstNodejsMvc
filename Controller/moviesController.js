@@ -3,11 +3,19 @@ const mongoose=require('mongoose');
 const app=express();
 app.use(express.json());
 const Movie=require('./../models/movieModel.js');
-console.log(Movie);
 
 exports.getallmovies=async (req,res)=>{
 try {
-    const allmovie=await Movie.find();
+    // console.log(req.query);
+    // const allmovie=await Movie.find({duration:145,rating:4.5});
+    // const allmovie=await Movie.find(req.query);
+    // const allmovie=await Movie.find().where('duration').equals(req.query.duration).where('rating').equals(req.query.rating);
+    let queryStr=JSON.stringify(req.query);
+    console.log(queryStr);
+    queryStr=queryStr.replace(/\b(gte|lte|gt|le)\b/g,(match)=>`$${match}`);
+    let queryObj=JSON.parse(queryStr);
+    console.log(queryObj);
+    const allmovie=await Movie.find(queryObj);
     res.status(200).json({
         status:"success",
         movie:{

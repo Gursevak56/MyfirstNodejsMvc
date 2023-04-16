@@ -1,1 +1,55 @@
-[{"id":"4","name":"Thor","length":"130"},{"id":"41","name":"Thor","length":"130"},{"id":"411","name":"Thor","length":"130"},{"id":"4111","name":"Thor","length":"130"},{"id":"41111","name":"Thor","length":"130"},{"id":41112,"name":"Thor","length":"130"},{"id":41113,"name":"Thor","length":"130"},{"id":41114,"name":"Thor","length":"130"},{"id":41115,"name":"pushpa","realesedate":"2019","duration":"90"},{"id":41116,"name":"pushpa","realeasedate":"2019","duration":"90"}]
+[{
+    "name": "Pushpa 2",
+    "description": "This is second part of Pushpa movie",
+    "duration": 145,
+    "rating": 4.5,
+    "totalRating": 12,
+    "releaseYear": 2022,
+    "releaseDate": "01-02-2024",
+    "genres": [
+      "action",
+      "comdey",
+      "drama"
+    ],
+    "diractors": [
+      "Rajamoli",
+      "Ajaynand",
+      "Kalipuri"
+    ],
+    "coverImage": "Traller.jpg",
+    "Actor": [
+      "Allu arjun",
+      "Bhramanand",
+      "Deshmukherji"
+    ],
+    "Price": 200
+  },
+  {
+    "name": "ma hu 2",
+    "description": "This is second part of P",
+    "duration": 140,
+    "rating": 4.2,
+    "totalRating": 13,
+    "releaseYear": 2024,
+    "releaseDate": "01-05-2023",
+    "genres": [
+      "action",
+      "comdey",
+      "drama",
+      "emotion"
+    ],
+    "diractors": [
+      "kriappa",
+      "Ajaynand",
+      "Kalipuri"
+    ],
+    "coverImage": "Movie.jpg",
+    "Actor": [
+      "Amrespuri",
+      "Bhramanand",
+      "Deshmukherji"
+    ],
+    "Price": 300
+  }
+
+]
