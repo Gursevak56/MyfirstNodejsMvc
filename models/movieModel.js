@@ -7,7 +7,7 @@ const movieSchema=new mongoose.Schema({
     },
     description:{
         type:String,
-        required:true
+        required:false
     },
 duration:{
     type:Number,
@@ -32,23 +32,23 @@ createdAt:{
 },
 genres:{
     type:[String],
-    required:[true,'genres is required field']
+    //required:[true,'genres is required field']
 },
 diractors:{
     type:[String],
-    required:[true,'diractors is required']
+    //required:[true,'diractors is required']
 },
 coverImage:{
     type:String,
-    required:[true,'cover image is required field']
+    //required:[true,'cover image is required field']
 },
 Actor:{
     type:[String],
-    required:[true,'actor is an required field']
+    //required:[true,'actor is an required field']
 },
 Price:{
     type:Number,
-    required:[true,'price is a required field']
+    //required:[true,'price is a required field']
 }
 })
 

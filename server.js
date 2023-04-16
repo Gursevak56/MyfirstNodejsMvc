@@ -2,12 +2,12 @@ const mongoose=require('mongoose');
 const dotenv=require('dotenv');
 dotenv.config({path:'./config.env'});
 const app=require('./app.js');
-console.log(process.env.CONNECT_STR);
+console.log(process.env.DB_CONN_STRING);
 const url='mongodb+srv://Gursevak:Gursevak%40123@cluster0.uhsysao.mongodb.net/clineFlex?retryWrites=true&w=majority';
-mongoose.connect(url,{
+mongoose.connect(process.env.DB_CONN_STRING,{
     useNewUrlParser:true
 }).then((conn)=>{
-    // console.log(conn);
+    console.log(conn);
     console.log("DB Connected");
 })
  const port=process.env.PORT;

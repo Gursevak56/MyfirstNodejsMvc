@@ -4,22 +4,49 @@ const app=express();
 app.use(express.json());
 const Movie=require('./../models/movieModel.js');
 
+exports.highestMovie=(req,res,next)=>{
+    req.query.limit='1';
+    req.query.sort='-rating';
+    next();
+}
 exports.getallmovies=async (req,res)=>{
 try {
     // console.log(req.query);
     // const allmovie=await Movie.find({duration:145,rating:4.5});
     // const allmovie=await Movie.find(req.query);
     // const allmovie=await Movie.find().where('duration').equals(req.query.duration).where('rating').equals(req.query.rating);
-    let queryStr=JSON.stringify(req.query);
-    console.log(queryStr);
-    queryStr=queryStr.replace(/\b(gte|lte|gt|le)\b/g,(match)=>`$${match}`);
-    let queryObj=JSON.parse(queryStr);
-    console.log(queryObj);
-    const allmovie=await Movie.find(queryObj);
+    // let queryStr=JSON.stringify(req.query);
+    // console.log(queryStr);
+    // queryStr=queryStr.replace(/\b(gte|lte|gt|le)\b/g,(match)=>`$${match}`);
+    // let queryObj=JSON.parse(queryStr);
+    // console.log(queryObj);
+    // const allmovie=await Movie.find({duration:{$lte:140}});
+    let query=Movie.find();
+    // if(req.query.sort){
+    //     const sortBy=req.query.sort.split(',').join(' ');
+    //     query=query.sort(sortBy);
+    //     query=query.select('name,duration');
+    // }
+    // else{
+    //     query=query.sort('-createdAt');
+    // }
+//    if(req.query.fields){
+//     console.log(req.query.fields);
+//     const fields=req.query.fields.split(',').join(' ');
+//     console.log(fields);
+//     query=query.select(fields);
+//    }
+    const page=req.query.page*1||1;
+    const limit=req.query.limit*1||7;
+    console.log(page);
+    let skip=(page-1)*limit;
+    console.log(skip);
+    query=query.skip(skip).limit(limit);
+    const movies=await query;
     res.status(200).json({
         status:"success",
         movie:{
-            allmovie
+            movies
         }
     })
 } catch (error) {
@@ -38,7 +65,7 @@ exports.getSinglemovie=async (req,res,next)=>{
         singleMovie
     })
     } catch (error) {
-      res.status.json({
+      res.status(200).json({
         status:"fail",
         messsage:error.message
       })  
