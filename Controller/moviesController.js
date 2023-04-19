@@ -3,7 +3,7 @@ const mongoose=require('mongoose');
 const app=express();
 app.use(express.json());
 const Movie=require('./../models/movieModel.js');
-
+const appFeatures=require('./../appFeatures.js');
 exports.highestMovie=(req,res,next)=>{
     req.query.limit='1';
     req.query.sort='-rating';
@@ -21,7 +21,10 @@ try {
     // let queryObj=JSON.parse(queryStr);
     // console.log(queryObj);
     // const allmovie=await Movie.find({duration:{$lte:140}});
-    let query=Movie.find();
+    console.log(req.query)
+    const features=new appFeatures(Movie.find(),req.query).filter().sort().limiting().paginate();
+  const movies=await features.query;
+   // console.log(movies);
     // if(req.query.sort){
     //     const sortBy=req.query.sort.split(',').join(' ');
     //     query=query.sort(sortBy);
@@ -36,13 +39,13 @@ try {
 //     console.log(fields);
 //     query=query.select(fields);
 //    }
-    const page=req.query.page*1||1;
-    const limit=req.query.limit*1||7;
-    console.log(page);
-    let skip=(page-1)*limit;
-    console.log(skip);
-    query=query.skip(skip).limit(limit);
-    const movies=await query;
+    // const page=req.query.page*1||1;
+    // const limit=req.query.limit*1||7;
+    // console.log(page);
+    // let skip=(page-1)*limit;
+    // console.log(skip);
+    // query=query.skip(skip).limit(limit);
+    // const movies=await query;
     res.status(200).json({
         status:"success",
         movie:{
@@ -75,7 +78,7 @@ exports.getSinglemovie=async (req,res,next)=>{
 
 exports.addNewmovie=async (req,res)=>{
     try {
-        console.log(req.body);
+        // console.log(req.body);
         const movie= await Movie.create(req.body);
         res.status(201).json({
             status:"success",
@@ -115,5 +118,50 @@ exports.deleteMovie= async (req,res)=>{
     } catch (error) {
         res.status(400).send(error.message);
     }
-    
     }
+   exports.getState=async(req,res)=>{
+    try {
+        const genres=req.params.genres;
+        const movies=await Movie.aggregate([
+            
+            {$unwind:'$genres'},
+            {$group:{
+                _id:'$genres',
+                movieCount:{$sum:1},
+                movies:{$push:'$name'}
+            }},
+            {$addFields:{genres:"$_id"}},
+            {$project:{_id:0}},
+            {$sort:{movieCount:-1}},
+            {$match:{genres:genres}}
+            
+        ])
+        res.status(200).json({
+            status:"success",
+            count:movies.length,
+            Movies:movies
+
+        })
+    } catch (error) {
+        res.status(400).json({
+            status:"fail",
+            message:error.message,
+        })
+    }
+   }
+   exports.suchAllmovies=async(req,res)=>
+   {
+    try {
+        const movies=await Movie.find();
+        res.status(200).json({
+            status:"success",
+            count:Movie.length,
+            movies:movies
+        })
+    } catch (error) {
+        res.status(400).json({
+            status:"success",
+            message:error.message
+        })
+    }
+   }

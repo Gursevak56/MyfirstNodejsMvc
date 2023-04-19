@@ -1,4 +1,5 @@
 const mongoose=require('mongoose');
+const fs=require('fs');
 const movieSchema=new mongoose.Schema({
     name:{
         type:String,
@@ -49,8 +50,30 @@ Actor:{
 Price:{
     type:Number,
     //required:[true,'price is a required field']
+},
+createdBy:{
+type:String
 }
+},{
+    toJSON:{virtuals:true},
+    toObject:{virtuals:true}
 })
-
+//virtual method
+movieSchema.virtual('durationByHour').get(function(){
+    return this.duration/60;
+})
+//pre method
+movieSchema.pre('save',function(next){
+    this.createdBy='Gursevak Singh Gill';
+    next();
+})
+//post method
+movieSchema.post('save',function(doc,next){
+    let content=`The movie ${doc.name}`;
+    fs.writeFileSync('./log/log.txt',content,{flag:'a'},(err)=>{
+        console.log(err);
+    })
+    next();
+})
 const Movie=mongoose.model('movie',movieSchema);
 module.exports=Movie;
