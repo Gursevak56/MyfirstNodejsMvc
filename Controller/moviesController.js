@@ -3,7 +3,7 @@ const mongoose=require('mongoose');
 const app=express();
 app.use(express.json());
 const Movie=require('./../models/movieModel.js');
-const appFeatures=require('./../appFeatures.js');
+const appFeatures=require('../coustomHandler/appFeatures.js');
 exports.highestMovie=(req,res,next)=>{
     req.query.limit='1';
     req.query.sort='-rating';
