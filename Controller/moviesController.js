@@ -59,21 +59,19 @@ try {
 })
     }
 }
-
 exports.getSinglemovie=async (req,res,next)=>{
-    try {
         const singleMovie=await Movie.findById(req.params.id);
+        if(!singleMovie){
+            const err=new coustomError('this movie is not found',404);
+            console.log(err);
+            return next(err);
+        }
     res.status(200).json({
         status:"success",
         singleMovie
     })
-    } catch (error) {
-      res.status(200).json({
-        status:"fail",
-        messsage:error.message
-      })  
-    }
-}
+    }   
+
 
 
 exports.addNewmovie=async (req,res)=>{

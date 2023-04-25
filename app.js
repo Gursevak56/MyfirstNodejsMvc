@@ -1,9 +1,7 @@
 const express = require("express");
 const app = express();
 const fs = require("fs");
-const errorHandler = require("./coustomHandler/errorHandler");
 const movieRouter = require("./Routes/moviesRouter.js");
-const globalHandler = require("./globalError/globalHandler");
 app.use(express.json());
 app.use(express.static("./public"));
 app.use("/api/v1/movies", movieRouter);
@@ -16,6 +14,7 @@ app.all("*", (req, res, next) => {
   // err.statusCode=600;
   // err.status="fail"
   // next(err);
+  console.log(req.body);
   const err = new errorHandler("cant't find this url", 404);
   next(err);
   app.use(globalHandler); //errorHandler middleware
