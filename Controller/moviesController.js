@@ -4,6 +4,8 @@ const app=express();
 app.use(express.json());
 const Movie=require('./../models/movieModel.js');
 const appFeatures=require('../coustomHandler/appFeatures.js');
+const asyncErrorHandler=require('./../globalError/asyncErrorHandler.js');
+const coustomError=require('./../coustomHandler/errorHandler.js');
 exports.highestMovie=(req,res,next)=>{
     req.query.limit='1';
     req.query.sort='-rating';
@@ -59,24 +61,20 @@ try {
 })
     }
 }
-exports.getSinglemovie=async (req,res,next)=>{
-        const singleMovie=await Movie.findById(req.params.id);
-        if(!singleMovie){
-            const err=new coustomError('this movie is not found',404);
-            console.log(err);
-            return next(err);
-        }
-    res.status(200).json({
-        status:"success",
-        singleMovie
-    })
-    }   
+exports.getSinglemovie = asyncErrorHandler(async (req,res,next)=>{
+    const singleMovie = await Movie.findById(req.params.id);
+    if(!singleMovie){
+        const err = new coustomError('this movie is not found',404);
+        return next(err);
+    }
+res.status(200).json({
+    status:"success",
+    singleMovie
+})
+}   )
 
-
-
-exports.addNewmovie=async (req,res)=>{
-    try {
-        // console.log(req.body);
+    
+exports.addNewmovie=asyncErrorHandler(async (req,res)=>{
         const movie= await Movie.create(req.body);
         res.status(201).json({
             status:"success",
@@ -84,13 +82,8 @@ exports.addNewmovie=async (req,res)=>{
                 movie
             }
         })
-    } catch (error) {
-        res.status(404).json({
-            status:"fail",
-            message:error.message
-        })
     }
-}
+)
 
 exports.updateMovie=async (req,res)=>{
    try {
@@ -147,19 +140,12 @@ exports.deleteMovie= async (req,res)=>{
         })
     }
    }
-   exports.suchAllmovies=async(req,res)=>
+   exports.suchAllmovies=asyncErrorHandler(async(req,res)=>
    {
-    try {
         const movies=await Movie.find();
         res.status(200).json({
             status:"success",
             count:Movie.length,
             movies:movies
         })
-    } catch (error) {
-        res.status(400).json({
-            status:"success",
-            message:error.message
-        })
-    }
-   }
+   });
