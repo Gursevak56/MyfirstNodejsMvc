@@ -7,7 +7,6 @@ const url = 'mongodb+srv://Gursevak:Gursevak%40123@cluster0.uhsysao.mongodb.net/
 mongoose.connect(process.env.DB_CONN_STRING, {
     useNewUrlParser: true
 }).then((conn) => {
-    console.log(conn);
     console.log("DB Connected");
 })
 const port = process.env.PORT;
