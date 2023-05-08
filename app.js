@@ -2,8 +2,11 @@ const express = require("express");
 const app = express();
 const fs = require("fs");
 const movieRouter = require("./Routes/moviesRouter.js");
-const errorHandler=require('./coustomHandler/errorHandler.js');
-const globalHandler=require('./globalError/globalHandler.js');
+const errorHandler = require("./coustomHandler/errorHandler.js");
+const globalHandler = require("./globalError/globalHandler.js");
+const bodyparser = require("body-parser");
+app.use(bodyparser.urlencoded({ extended: true, limit: "50mb" }));
+app.use(bodyparser.json());
 app.use(express.json());
 app.use(express.static("./public"));
 app.use("/api/v1/movies", movieRouter);
@@ -25,7 +28,7 @@ app.all("*", (req, res, next) => {
   //     message:err.message
   //   })
   // })
-  const err = new errorHandler(`cant't find this url ${req.originalUrl}`,415);
+  const err = new errorHandler(`cant't find this url ${req.originalUrl}`, 415);
   next(err);
   app.use(globalHandler); //errorHandler middleware
 });

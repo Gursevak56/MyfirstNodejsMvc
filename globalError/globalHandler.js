@@ -1,3 +1,5 @@
+const dotenv=require('dotenv');
+dotenv.config({path:'./config.env'});
 function production(error,res){
     res.status(statusCode).json({
         status:error.status,
@@ -14,7 +16,7 @@ const development=(error,res)=>{
     
 }
 module.exports=(error,req,res,next)=>{
-error.statusCode=error.statusCode || 450;
+error.statusCode=error.statusCode || 455;
 error.status=error.status || 'fail';
 
 if(process.env.NODE_env === 'development'){
