@@ -23,7 +23,7 @@ const validator = require('validator');
     },
     confirmpassword:{
         type:String,
-        required
+        required:true
     }
  })
  //user model

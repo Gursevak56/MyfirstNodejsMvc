@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const fs = require("fs");
 const movieRouter = require("./Routes/moviesRouter.js");
-const errorHandler = require("./coustomHandler/errorHandler.js");
+const usersrouter = require('./Routes/usersrouter.js');
+const errorHandler = require("./utils/errorHandler.js");
 const globalHandler = require("./globalError/globalHandler.js");
 const bodyparser = require("body-parser");
 app.use(bodyparser.urlencoded({ extended: true, limit: "50mb" }));
@@ -10,6 +11,7 @@ app.use(bodyparser.json());
 app.use(express.json());
 app.use(express.static("./public"));
 app.use("/api/v1/movies", movieRouter);
+app.use('/api/v1/user', usersrouter);
 app.all("*", (req, res, next) => {
   // res.status(404).json({
   //     status:"fail",

@@ -2,41 +2,43 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const Movie = require("./../models/movieModel.js");
-const appFeatures = require("../coustomHandler/appFeatures.js");
+const appFeatures = require("./../utils/appFeatures.js");
 // const asyncErrorHandler=require('./../globalError/asyncErrorHandler.js');
-const coustomError = require("./../coustomHandler/errorHandler.js");
+const coustomError = require("../utils/errorHandler.js");
 exports.higestRated = async (req,res,next)=>{
   req.query.limit = '5';
   req.query.sort = '-rating'
   next();
 }
 exports.getallmovies = async (req, res) => {
-  let querystr = JSON.stringify(req.query);
-  querystr = querystr.replace(/\b(gte|gt|lte|lt)\b/g,(match)=>`$${match}`);
- const queryObj = JSON.parse(querystr);
-  console.log(queryObj)
+  const features = new appFeatures(Movie.find(),req.query).filtering().sort().limiting().pagination();
+  const movies = await features.query;
+//   let querystr = JSON.stringify(req.query);
+//   querystr = querystr.replace(/\b(gte|gt|lte|lt)\b/g,(match)=>`$${match}`);
+//  const queryObj = JSON.parse(querystr);
+//   console.log(queryObj)
 
 
-  // const movies = await Movie.find().where('duration').equals(req.query.duration);
-  //sorting method
-  let query =  Movie.find();
-  if(req.query.sort){
-    const sortby = req.query.sort.split(',').join(' ');
-    query =query.sort(sortby);
-  }
-  //limiting method
-  if(req.query.fields){
-    const sortby = req.query.fields.split(',').join(' ');
-    query = query.select(sortby);
-  }
-  //pagination method
+//   // const movies = await Movie.find().where('duration').equals(req.query.duration);
+//   //sorting method
+//   let query =  Movie.find();
+//   if(req.query.sort){
+//     const sortby = req.query.sort.split(',').join(' ');
+//     query =query.sort(sortby);
+//   }
+//   //limiting method
+//   if(req.query.fields){
+//     const sortby = req.query.fields.split(',').join(' ');
+//     query = query.select(sortby);
+//   }
+//   //pagination method
   
-    const page = req.query.page*1||1;
-    const limit =req.query.limit*1||10;
-    const skip =(page-1)*limit;
-    query = query.skip(skip).limit(limit);
+//     const page = req.query.page*1||1;
+//     const limit =req.query.limit*1||10;
+//     const skip =(page-1)*limit;
+//     query = query.skip(skip).limit(limit);
 
-   const movies = await query;
+//    const movies = await query;
   if(!movies){
     res.status(404).json({
       status:'fail',
