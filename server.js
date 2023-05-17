@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-dotenv.config({ path: './config.env' });
+dotenv.config();
 const app = require('./app.js');
 console.log(process.env.DB_CONN_STRING);
 const url = 'mongodb+srv://Gursevak:Gursevak%40123@cluster0.uhsysao.mongodb.net/clineFlex?retryWrites=true&w=majority';
@@ -8,6 +8,8 @@ mongoose.connect(process.env.DB_CONN_STRING, {
     useNewUrlParser: true
 }).then((conn) => {
     console.log("DB Connected");
+}).catch(err=>{
+    console.log(err);
 })
 const port = process.env.PORT;
 app.listen(port, (err, value) => {
