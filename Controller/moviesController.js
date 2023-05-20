@@ -4,7 +4,7 @@ const app = express();
 const Movie = require("./../models/movieModel.js");
 const appFeatures = require("./../utils/appFeatures.js");
 // const asyncErrorHandler=require('./../globalError/asyncErrorHandler.js');
-const coustomError = require("../utils/errorHandler.js");
+const coustomError = require("../utils/errorHandler.js").default;
 exports.higestRated = async (req,res,next)=>{
   req.query.limit = '5';
   req.query.sort = '-rating'

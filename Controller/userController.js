@@ -2,7 +2,8 @@ const User = require("./../models/userModel.js");
 const asyncErrorHandler = require("./../globalError/asyncErrorHandler.js");
 const jwt = require("jsonwebtoken");
 const util = require("util");
-const customerror = require("./../utils/errorHandler.js");
+const customerror = require("./../utils/errorHandler.js").default;
+const sendemail = require('./../utils/email.js');
 const singletoken = (id) => {
   return jwt.sign({ _id: id }, process.env.SECRET_KEY, {
     expiresIn: 1000,
@@ -75,4 +76,50 @@ if(req.user.role !== role){
 }
 next();
 }
+}
+exports.forgetPassword = async (req,res,next)=>{
+const email = req.body.email;
+const user = await User.findOne({email:email});
+if(!user){
+  const error= new customerror("user is not found with this email id",415);
+}
+const token = user.createrandomstring();
+res.send(token)
+const updated = await User.findOneAndUpdate({email:user.email},{$set:{passwordResetToken:token,passwordResetTokenexpires:Date.now()+10*60*1000}});
+if(!updated){
+  const err = new customerror("token not saved");
+}
+const reseturl = `${req.protocol}://${req.hostname}/api/v1/user/resetpassword/${token}`;
+const message = `This is password reset email please click on below link \n\n${reseturl}\n for reset the password`
+try {
+  await sendemail({
+    email:user.email,
+    message:message,
+    subject:"change the password"
+  })
+} catch (error) {
+  user.passwordResetToken=undefined;
+  user.passwordResetTokenexpires=undefined;
+  user.save({validateBeforeSave:false});
+  console.log(error);
+}
+}
+exports.resetPassword = async (req,res,next)=>{
+const user = await User.findOne({passwordResetToken:req.params.token,passwordResetTokenexpires:{$gt:Date.now()}})
+if(!user){
+  const error =  customerror("user with given token not exists",415);
+  next(error);
+}
+user.password=req.body.password;
+user.confirmpassword=req.body.confirmpassword;
+user.passwordResetToken=undefined;
+user.passwordResetTokenexpires=undefined
+user.passwordAt=Date.now();
+const saveuser = await user.save();
+const token = singletoken(user._id)
+res.status(200).json({
+  status:'success',
+  token,
+  saveuser
+})
 }
